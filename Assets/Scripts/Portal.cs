@@ -34,13 +34,13 @@ public class Portal : MonoBehaviour
             Weapon weapon = player.GetComponentInChildren<Weapon>();
             if (weapon == null)
             {
-                // Jika player tidak memiliki weapon, sembunyikan portal dan matikan collidernya
+                
                 GetComponent<SpriteRenderer>().enabled = false;
                 GetComponent<Collider2D>().enabled = false;
             }
             else
             {
-                // Jika player memiliki weapon, tampilkan portal dan aktifkan collidernya
+                
                 GetComponent<SpriteRenderer>().enabled = true;
                 GetComponent<Collider2D>().enabled = true;
             }
@@ -49,14 +49,14 @@ public class Portal : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Jika portal mengenai player, load scene "Main"
+        
         if (other.CompareTag("Player"))
         {
             GameManager.Instance.LevelManager.LoadScene("Main");
         }
     }
 
-    // Method untuk mengubah posisi newPosition secara acak
+    
     private void ChangePosition()
     {
         float x = Random.Range(-10f, 10f); 
