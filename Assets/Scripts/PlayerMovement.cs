@@ -4,19 +4,17 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private Rigidbody2D rb; // Reference to the Rigidbody2D component
-
-    public Vector2 maxSpeed = new Vector2(5f, 5f); // Maximum speed in each direction
-    public Vector2 timeToFullSpeed = new Vector2(1f, 1f); // Time to reach max speed
-    public Vector2 timeToStop = new Vector2(0.5f, 0.5f); // Time to stop when input is released
-    public Vector2 stopClamp = new Vector2(2.5f, 2.5f); // Minimum speed threshold before stopping
-
-    private Vector2 currentSpeed; // Current speed of the player
-    private Vector2 moveDirection; // Direction of movement based on player input
-    private Vector2 moveVelocity; // Velocity applied to the player when moving
-    private Vector2 moveFriction; // Friction applied when player is moving
-    private Vector2 stopFriction; // Friction applied when player is stopping
-    private bool isMoving = false; // Indicates if the player is moving
+    private Rigidbody2D rb; 
+    public Vector2 maxSpeed = new Vector2(5f, 5f); 
+    public Vector2 timeToFullSpeed = new Vector2(1f, 1f); 
+    public Vector2 timeToStop = new Vector2(0.5f, 0.5f); 
+    public Vector2 stopClamp = new Vector2(2.5f, 2.5f); 
+    private Vector2 currentSpeed; 
+    private Vector2 moveDirection; 
+    private Vector2 moveVelocity; 
+    private Vector2 moveFriction; 
+    private Vector2 stopFriction; 
+    private bool isMoving = false; 
 
     private void Start()
     {
@@ -46,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void Move()
     {
-        // Retrieve player input for movement
+        
         float horizontalInput = 0f;
         float verticalInput = 0f;
 
@@ -55,16 +53,16 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.D)) horizontalInput = 1f; 
         if (Input.GetKey(KeyCode.A)) horizontalInput = -1f; 
 
-        // Calculate the move direction based on input
+        
         moveDirection = new Vector2(horizontalInput, verticalInput).normalized;
 
-        // Calculate the applied movement velocity based on the direction and moveVelocity
+        
         Vector2 appliedVelocity = new Vector2(
             moveVelocity.x * moveDirection.x,
             moveVelocity.y * moveDirection.y
         );
 
-        // Update the Rigidbody2D velocity with the calculated new velocity
+        
         rb.velocity = new Vector2(moveDirection.x * maxSpeed.x, moveDirection.y * maxSpeed.y);
     }
 
@@ -89,5 +87,5 @@ public class PlayerMovement : MonoBehaviour
     {
         if (rb.velocity.magnitude > 0) return true;
         else return false;
-    }
+    }
 }
