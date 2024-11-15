@@ -1,18 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [Header("Enemy Stats")]
+    public int level = 1;
+
+    protected virtual void Start()
     {
-        
+        // Inisialisasi jika diperlukan
     }
 
-    // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
-        
+        // Logika per frame untuk Enemy umum
+    }
+
+    protected void DestroyIfOffScreen()
+    {
+        if (!RendererIsVisible())
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private bool RendererIsVisible()
+    {
+        var renderer = GetComponent<Renderer>();
+        return renderer.isVisible;
     }
 }

@@ -1,81 +1,113 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponPickup : MonoBehaviour
 {
-    [SerializeField] private Weapon weaponHolder;
-    private Weapon weapon;
+    [SerializeField] Weapon weaponHolder;
 
-    private void Awake()
+    Weapon weapon;
+
+    void Awake()
     {
-        // Buat instance dari weaponHolder dan simpan di weapon
         if (weaponHolder != null)
-        {
             weapon = Instantiate(weaponHolder);
+        else{
+            Debug.Log("no weapon holder");
         }
     }
 
     void Start()
     {
-        if (weapon != null)
-        {
-            TurnVisual(false);
+        if (weapon == null){
+            Debug.Log("weap Null");
+            return;
         }
+            
+
+        TurnVisual(false);
+
+        weapon.enabled = false;
+        weapon.transform.SetParent(transform, false);
+        weapon.transform.localPosition = transform.position;
+
+        weapon.parentTransform = transform;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.CompareTag("Player"))
+        if(weapon == null){
+            Debug.Log("no Weap");
+        }
+        else if(!other.gameObject.CompareTag("Player")){
+            Debug.Log("Not A player");
+        }
+        // Trigger itu bisa ke semua objek, jadi harus cari si Player
+        if (weapon != null && other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Player picked up weapon");
+            Weapon playerWeapon = other.gameObject.GetComponentInChildren<Weapon>();
 
-            // Cek apakah player sudah memiliki weapon
-            Weapon currentWeapon = collision.gameObject.GetComponentInChildren<Weapon>();
-            if (currentWeapon != null)
+            if (playerWeapon != null)
             {
-                Destroy(currentWeapon.gameObject); // Hapus weapon yang ada jika sudah ada sebelumnya
+                PickupHandler(true);
+                playerWeapon.transform.SetParent(playerWeapon.parentTransform);
+                playerWeapon.transform.localScale = new(1, 1);
+                playerWeapon.transform.localPosition = new(0, 0);
+
+                TurnVisual(false, playerWeapon);
             }
 
-            if (weapon != null)
-            {
-                weapon.transform.SetParent(collision.gameObject.transform, false);
-                TurnVisual(true);
+            weapon.enabled = true;
+            weapon.transform.SetParent(other.transform, false);
+
+            TurnVisual(true);
+            PickupHandler(false);
+
+            weapon.transform.localPosition = new(0.0f, 0.0f);
+            Player player = other.GetComponent<Player>();
+            if (player != null){
+                player.SwitchWeapon(weapon, this);  // Pass the new weapon and this WeaponPickup instance
             }
-            else
-            {
-                Debug.LogWarning("Weapon is null!");
-            }
+        }
+        else{
+            Debug.Log("no reference");
         }
     }
 
-    private void TurnVisual(bool on)
+    void TurnVisual(bool on)
     {
-        // Pastikan weapon tidak null sebelum mengubah visualnya
-        if (weapon != null)
+        if (on)
         {
-            TurnVisual(on, weapon);
+            weapon.GetComponent<SpriteRenderer>().enabled = true;
+            weapon.GetComponent<Animator>().enabled = true;
+            weapon.GetComponent<Weapon>().enabled = true;
         }
+        else
+        {
+            weapon.GetComponent<SpriteRenderer>().enabled = false;
+            weapon.GetComponent<Animator>().enabled = false;
+            weapon.GetComponent<Weapon>().enabled = false;
+        }
+
     }
 
-    private void TurnVisual(bool on, Weapon weapon)
+    void TurnVisual(bool on, Weapon weapon)
     {
-        if (weapon != null)
+        if (on)
         {
-            // Aktifkan atau nonaktifkan komponen visual dari weapon
-            var spriteRenderer = weapon.GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
-            {
-                spriteRenderer.enabled = on;
-            }
-
-            var animator = weapon.GetComponent<Animator>();
-            if (animator != null)
-            {
-                animator.enabled = on;
-            }
-
-            weapon.enabled = on;
+            weapon.GetComponent<SpriteRenderer>().enabled = true;
+            weapon.GetComponent<Animator>().enabled = true;
+            weapon.GetComponent<Weapon>().enabled = true;
         }
+        else
+        {
+            weapon.GetComponent<SpriteRenderer>().enabled = false;
+            weapon.GetComponent<Animator>().enabled = false;
+            weapon.GetComponent<Weapon>().enabled = false;
+        }
+
     }
+
+    public void PickupHandler(bool state){
+        gameObject.SetActive(state);
+    }
+
 }

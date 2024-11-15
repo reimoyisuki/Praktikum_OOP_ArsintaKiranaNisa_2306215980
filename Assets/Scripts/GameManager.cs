@@ -1,40 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    // Singleton instance untuk GameManager
     public static GameManager Instance { get; private set; }
-    
-    // Referensi ke LevelManager
+
     public LevelManager LevelManager { get; private set; }
 
-    private void Awake()
+    void Awake()
     {
-        // Singleton pattern: memastikan hanya ada satu instance GameManager
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
 
-        // Mendapatkan referensi ke LevelManager
-        LevelManager = FindObjectOfType<LevelManager>();
+        Instance = this;
 
-        // Menghilangkan semua objek kecuali Camera dan Player
-        foreach (GameObject obj in FindObjectsOfType<GameObject>())
-        {
-            if (obj.CompareTag("MainCamera") || obj.CompareTag("Player"))
-                continue;
+        LevelManager = GetComponentInChildren<LevelManager>();
 
-            Destroy(obj);
-        }
+        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(GameObject.Find("Camera"));
     }
 }
