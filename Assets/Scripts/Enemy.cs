@@ -1,31 +1,29 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Enemy : MonoBehaviour
 {
-    [Header("Enemy Stats")]
-    public int level = 1;
+  [SerializeField] protected int level;
 
-    protected virtual void Start()
-    {
-        // Inisialisasi jika diperlukan
-    }
+  public UnityEvent enemyKilledEvent;
 
-    protected virtual void Update()
-    {
-        // Logika per frame untuk Enemy umum
-    }
+  private void Start()
+  {
+    enemyKilledEvent ??= new UnityEvent();
+  }
 
-    protected void DestroyIfOffScreen()
-    {
-        if (!RendererIsVisible())
-        {
-            Destroy(gameObject);
-        }
-    }
+  public void SetLevel(int level)
+  {
+    this.level = level;
+  }
 
-    private bool RendererIsVisible()
-    {
-        var renderer = GetComponent<Renderer>();
-        return renderer.isVisible;
-    }
+  public int GetLevel()
+  {
+    return level;
+  }
+
+  private void OnDestroy()
+  {
+    enemyKilledEvent.Invoke();
+  }
 }
